@@ -1,0 +1,46 @@
+# -*- coding: utf-8 -*-
+
+import scrapy
+import pycountry
+from locations.items import GeojsonPointItem
+from locations.categories import Code
+from typing import List, Dict
+import json
+from bs4 import BeautifulSoup
+import re
+
+class BalkanHotelsSpider(scrapy.Spider):
+    name: str = 'balkan_hotels_dac'
+    spider_type: str = 'generic'
+    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
+    spider_countries: List[str] = [pycountry.countries.lookup('al').alpha_2]
+    item_attributes: Dict[str, str] = {'brand': 'Balkan Hotels'}
+    allowed_domains: List[str] = ['www.balkan-hotel.com/']
+
+    start_urls = ['https://www.balkan-hotel.com/albania/valbona/hotels-in-valbona', 'https://www.balkan-hotel.com/albania/lepushe/hotels-in-lepushe', 'https://www.balkan-hotel.com/albania/vermosh/hotels-in-vermosh', 'https://www.balkan-hotel.com/albania/erseke/hotels-in-erseke', 'https://www.balkan-hotel.com/albania/theth/hotels-in-theth', 'https://www.balkan-hotel.com/albania/pogradec/hotels-in-pogradec', 'https://www.balkan-hotel.com/albania/permet/hotels-in-permet', 'https://www.balkan-hotel.com/albania/leskovik/hotels-in-leskovik', 'https://www.balkan-hotel.com/albania/lin/hotels-in-lin', 'https://www.balkan-hotel.com/albania/divjaka/hotels-in-divjaka', 'https://www.balkan-hotel.com/albania/corovoda/hotels-in-corovoda', 'https://www.balkan-hotel.com/albania/himara/hotels-in-himara', 'https://www.balkan-hotel.com/albania/gjirokastra/hotels-in-gjirokastra', 'https://www.balkan-hotel.com/albania/tepelena/hotels-in-tepelena', 'https://www.balkan-hotel.com/albania/borsh/hotels-in-borsh', 'https://www.balkan-hotel.com/albania/qeparo/hotels-in-qeparo', 'https://www.balkan-hotel.com/albania/puka/hotels-in-puka', 'https://www.balkan-hotel.com/albania/korca/hotels-in-korca', 'https://www.balkan-hotel.com/albania/shengjin/hotels-in-shengjin', 'https://www.balkan-hotel.com/albania/durres/hotels-in-durres', 'https://www.balkan-hotel.com/albania/dhermi/hotels-in-dhermi', 'https://www.balkan-hotel.com/albania/velipoja/hotels-in-velipoja', 'https://www.balkan-hotel.com/albania/berat/hotels-in-berat', 'https://www.balkan-hotel.com/albania/shkodra/hotels-in-shkodra', 'https://www.balkan-hotel.com/albania/vlora/hotels-in-vlora', 'https://www.balkan-hotel.com/albania/saranda/hotels-in-saranda', 'https://www.balkan-hotel.com/albania/peshkopi/hotels-in-peshkopi', 'https://www.balkan-hotel.com/albania/voskopoja/hotels-in-voskopoja', 'https://www.balkan-hotel.com/albania/tirana/hotels-in-tirana', 'https://www.balkan-hotel.com/albania/kruja/hotels-in-kruja', 'https://www.balkan-hotel.com/albania/kukes/hotels-in-kukes', 'https://www.balkan-hotel.com/albania/fier/hotels-in-fier', 'https://www.balkan-hotel.com/albania/elbasan/hotels-in-elbasan', 'https://www.balkan-hotel.com/albania/tropoja/hotels-in-tropoja', 'https://www.balkan-hotel.com/albania/kavaje/hotels-in-kavaje', 'https://www.balkan-hotel.com/albania/mirdite/hotels-in-mirdite', 'https://www.balkan-hotel.com/albania/kucova/hotels-in-kucova', 'https://www.balkan-hotel.com/albania/lezha/hotels-in-lezha', 'https://www.balkan-hotel.com/albania/gramsh/hotels-in-gramsh', 'https://www.balkan-hotel.com/albania/lushnje/hotels-in-lushnje', 'https://www.balkan-hotel.com/albania/bilisht/hotels-in-bilisht', 'https://www.balkan-hotel.com/kosovo/pristina/hotels-in-pristina', 'https://www.balkan-hotel.com/kosovo/prizren/hotels-in-prizren', 'https://www.balkan-hotel.com/kosovo/peja/hotels-in-peja', 'https://www.balkan-hotel.com/kosovo/gjakova/hotels-in-gjakova', 'https://www.balkan-hotel.com/kosovo/boga/hotels-in-boga', 'https://www.balkan-hotel.com/kosovo/mitrovica/hotels-in-mitrovica', 'https://www.balkan-hotel.com/kosovo/brezovica/hotels-in-brezovica', 'https://www.balkan-hotel.com/kosovo/gjilan/hotels-in-gjilan', 'https://www.balkan-hotel.com/kosovo/ferizaj/hotels-in-ferizaj', 'https://www.balkan-hotel.com/macedonia/ohrid/hotels-in-ohrid', 'https://www.balkan-hotel.com/macedonia/skopje/hotels-in-skopje', 'https://www.balkan-hotel.com/macedonia/struga/hotels-in-struga', 'https://www.balkan-hotel.com/macedonia/mavrovo/hotels-in-mavrovo', 'https://www.balkan-hotel.com/macedonia/bitola/hotels-in-bitola', 'https://www.balkan-hotel.com/macedonia/debar/hotels-in-debar', 'https://www.balkan-hotel.com/macedonia/tetovo/hotels-in-tetovo', 'https://www.balkan-hotel.com/macedonia/prilep/hotels-in-prilep', 'https://www.balkan-hotel.com/macedonia/dojran/hotels-in-dojran', 'https://www.balkan-hotel.com/macedonia/berovo/hotels-in-berovo', 'https://www.balkan-hotel.com/macedonia/kavadarci/hotels-in-kavadarci', 'https://www.balkan-hotel.com/macedonia/strumica/hotels-in-strumica', 'https://www.balkan-hotel.com/macedonia/gevgelija/hotels-in-gevgelija', 'https://www.balkan-hotel.com/macedonia/krushevo/hotels-in-krushevo', 'https://www.balkan-hotel.com/montenegro/budva/hotels-in-budva', 'https://www.balkan-hotel.com/montenegro/ulcinj/hotels-in-ulcinj', 'https://www.balkan-hotel.com/montenegro/kotor/hotels-in-kotor', 'https://www.balkan-hotel.com/montenegro/sveti-stefan/hotels-in-sveti-stefan', 'https://www.balkan-hotel.com/montenegro/podgorica/hotels-in-podgorica', 'https://www.balkan-hotel.com/montenegro/kolasin/hotels-in-kolasin', 'https://www.balkan-hotel.com/montenegro/becici/hotels-in-becici', 'https://www.balkan-hotel.com/montenegro/herceg-novi/hotels-in-herceg-novi', 'https://www.balkan-hotel.com/montenegro/petrovac/hotels-in-petrovac', 'https://www.balkan-hotel.com/montenegro/tivat/hotels-in-tivat', 'https://www.balkan-hotel.com/montenegro/bar/hotels-in-bar', 'https://www.balkan-hotel.com/montenegro/zabljak/hotels-in-zabljak', 'https://www.balkan-hotel.com/greece/corfu/hotels-in-corfu', 'https://www.balkan-hotel.com/greece/halkidiki/hotels-in-halkidiki', 'https://www.balkan-hotel.com/greece/thessaloniki/hotels-in-thessaloniki', 'https://www.balkan-hotel.com/greece/athens/hotels-in-athens', 'https://www.balkan-hotel.com/greece/ioannina/hotels-in-ioannina', 'https://www.balkan-hotel.com/greece/katerini/hotels-in-katerini', 'https://www.balkan-hotel.com/greece/igoumenitsa/hotels-in-igoumenitsa', 'https://www.balkan-hotel.com/greece/kastoria/hotels-in-kastoria', 'https://www.balkan-hotel.com/greece/parga/hotels-in-parga', 'https://www.balkan-hotel.com/greece/konitsa/hotels-in-konitsa', 'https://www.balkan-hotel.com/greece/florina/hotels-in-florina', 'https://www.balkan-hotel.com/greece/kalabaka/hotels-in-kalabaka', 'https://www.balkan-hotel.com/greece/preveza/hotels-in-preveza', 'https://www.balkan-hotel.com/greece/zagori/hotels-in-zagori', 'https://www.balkan-hotel.com/serbia/belgrade/hotels-in-belgrade', 'https://www.balkan-hotel.com/serbia/kopaonik/hotels-in-kopaonik', 'https://www.balkan-hotel.com/serbia/nis/hotels-in-nis', 'https://www.balkan-hotel.com/serbia/zlatibor/hotels-in-zlatibor', 'https://www.balkan-hotel.com/serbia/novi-sad/hotels-in-novi-sad', 'https://www.balkan-hotel.com/serbia/kraljevo/hotels-in-kraljevo', 'https://www.balkan-hotel.com/serbia/subotica/hotels-in-subotica', 'https://www.balkan-hotel.com/serbia/palic/hotels-in-palic', 'https://www.balkan-hotel.com/bosnia/sarajevo/hotels-in-sarajevo', 'https://www.balkan-hotel.com/bosnia/mostar/hotels-in-mostar', 'https://www.balkan-hotel.com/bosnia/medjugorje/hotels-in-medjugorje', 'https://www.balkan-hotel.com/bosnia/banja-luka/hotels-in-banja-luka', 'https://www.balkan-hotel.com/bosnia/neum/hotels-in-neum', 'https://www.balkan-hotel.com/bosnia/trebinje/hotels-in-trebinje', 'https://www.balkan-hotel.com/bosnia/bihac/hotels-in-bihac', 'https://www.balkan-hotel.com/bosnia/capljina/hotels-in-capljina', 'https://www.balkan-hotel.com/bosnia/bijeljina/hotels-in-bijeljina', 'https://www.balkan-hotel.com/bosnia/vlasic/hotels-in-vlasic', 'https://www.balkan-hotel.com/croatia/dubrovnik/hotels-in-dubrovnik', 'https://www.balkan-hotel.com/croatia/split/hotels-in-split', 'https://www.balkan-hotel.com/croatia/zagreb/hotels-in-zagreb', 'https://www.balkan-hotel.com/croatia/korcula/hotels-in-korcula', 'https://www.balkan-hotel.com/croatia/cavtat/hotels-in-cavtat', 'https://www.balkan-hotel.com/croatia/hvar/hotels-in-hvar', 'https://www.balkan-hotel.com/croatia/zadar/hotels-in-zadar', 'https://www.balkan-hotel.com/croatia/baska-voda/hotels-in-baska-voda', 'https://www.balkan-hotel.com/croatia/drvenik/hotels-in-drvenik']
+        
+    def parse(self, response):
+        url = response.url
+
+        countryPat = re.compile(r'https://www.balkan-hotel.com/(.*?)/')
+        country = countryPat.findall(url)[0]
+
+        doc = BeautifulSoup(response.text)
+        hotels = doc.find_all(class_='list-items hotel-listing hotelOutterData')
+        
+        for hotel in hotels:
+            info = json.loads(hotel['data-summary'])
+
+            data = {
+                'ref': info['hid'],
+                'brand': 'generic',
+                'name': info['nam'],
+                'website': url,
+                'city': info['city'],
+                'country': country,
+                'lat': float(info['lat']),
+                'lon': float(info['lan']),
+                'extras': {'stars': info['stars']}
+            }
+            
+            yield GeojsonPointItem(**data)

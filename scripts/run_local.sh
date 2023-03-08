@@ -1,0 +1,1 @@
+FOR %%spider IN (pipenv run scrapy list) DO pipenv run scrapy crawl "%%spider" -o "%%spider".csv

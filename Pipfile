@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+scrapy = "*"
+beautifulsoup4 = "*"
+lxml = "*"
+xmltodict = "*"
+pandas = "*"
+requests = "*"
+pyyaml = "*"
+iteration-utilities = "*"
+pycountry = "*"
+pyopenssl = "==23.0.0"
+numpy = "*"
+openpyxl = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
